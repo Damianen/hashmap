@@ -1,5 +1,5 @@
 class Node {
-    Node(key, value) {
+    constructor(key, value) {
         this.value = value;
         this.key = key;
         this.next = null;
@@ -10,9 +10,11 @@ class HashMap {
     #ArrayLength = 16;
     #valuesAmount = 0;
     #loadFactor = 0.8;
-    #buckets = [16];
-    
-    HashMap() {}
+    #buckets = [];
+
+    constructor() {
+        this.#buckets.length = 16;
+    }
 
     #hash(key) {
         let hashCode = 0;
@@ -27,9 +29,9 @@ class HashMap {
 
     resizeMap() {
         let nodes = this.#nodes();
-        this.#buckets.clear();
+        this.#buckets.length = 0;
         this.#ArrayLength += 16;
-        this.#buckets = this.#ArrayLength;
+        this.#buckets.length = this.#ArrayLength;
         this.#valuesAmount = 0;
 
         for (let i = 0; i < nodes.length; i++) {
@@ -42,8 +44,8 @@ class HashMap {
         let node = new Node(key, value);
         let hashCode = this.#hash(key);
 
-        if (index < 0 || index >= this.#buckets.length) {
-            throw new Error("Trying to access index out of bound");
+        if (hashCode < 0 || hashCode >= this.#buckets.length) {
+            throw new Error("Trying to access index out of bound, Index: " + hashCode);
         }
 
         this.#valuesAmount++;
@@ -56,6 +58,10 @@ class HashMap {
             let n = this.#buckets[hashCode];
 
             while (n.next != null) {
+                if (n.key == key) {
+                    n.value = value;
+                    return;
+                }
                 n = n.next;
             }
 
@@ -140,7 +146,7 @@ class HashMap {
     }
 
     clear() {
-        this.#buckets.clear();
+        this.#buckets.length = 0;
         this.#buckets.length = 16;
         this.#ArrayLength = 16;
         this.#valuesAmount = 0;
@@ -152,12 +158,14 @@ class HashMap {
         for (let i = 0; i < this.#buckets.length; i++) {
             let node = this.#buckets[i];
             
+            
             if (node == null) {
                 continue;
             }
 
             if (node.next == null) {
                 nodes.push(node);
+                
                 continue;
             }
 
@@ -166,6 +174,8 @@ class HashMap {
                 node = node.next;
             }
         }
+
+        return nodes;
     }
 
     keys() {
@@ -201,3 +211,32 @@ class HashMap {
         return pairs;
     }
 }
+
+let map = new HashMap();
+
+map.set("test", "test");
+map.set("koelllllllllllllllll", "koel")
+map.set("koellllllllllllllll", "koel")
+map.set("koelllllllllllllll", "koel")
+map.set("koelllllllllllll", "koel")
+map.set("koellllllllllll", "koel")
+map.set("koelllllllllll", "koel")
+map.set("koelllllllll", "koel")
+map.set("koellllllll", "koel")
+map.set("koelllllll", "koel")
+map.set("koellllll", "koel")
+map.set("koelllll", "koel")
+map.set("koellll", "koel")
+map.set("koellll", "koel")
+map.set("koell", "koel")
+map.set("koe", "koel")
+map.set("ko", "koel")
+map.set("k", "koel")
+console.log(map.get("test"));
+console.log(map.has("test"));
+console.log(map.length());
+console.log(map.keys());
+console.log(map.values());
+map.clear()
+console.log(map.entries());
+
